@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 
+import hashlib
 import os
 import sys
+import tempfile
+import urllib
 
 import distlib.locators
 import github
-import uritemplate
 
 
 github_repo = 'cupy/cupy'
@@ -51,18 +53,30 @@ def get_pypi_assets(project, version):
     return {url: x[1] for url, x in proj[version].digests.items()}
 
 
-def upload_url_to_github_release(url, release):
+def upload_url_to_github_release(url, md5, release):
     filename = os.path.basename(url)
     for existing_asset in release.raw_data['assets']:
         if existing_asset['name'] == filename:
             print('SKIP: Already exists on GitHub Assets')
             return
-    print(f'TODO: upload to {release.upload_url}')
+
+    with tempfile.NamedTemporaryFile() as f:
+        h = hashlib.new('md5')
+        print('  >> downloading', url)
+        with urllib.request.urlopen(url) as response:
+            buf = response.read()
+            f.write(buf)
+            h.update(buf)
+        assert h.hexdigest() == md5
+
+        print('  >> uploading')
+        release.upload_asset(f.name, content_type='application/zip', name=filename)
 
 
 
 def main():
-    token = os.environ.get('GITHUB_TOKEN', None)
+    token = os.environ.get('GITHUB_TOKEN')
+    assert token
     repo = github.Github(token).get_repo(github_repo)
 
     for project in all_projects:
@@ -75,9 +89,9 @@ def main():
 
             gh_release = repo.get_release(version_gh)
             print(gh_release)
-            for src, md5 in sources.items():
-                print(f'Uploading: {src} (md5: {md5})')
-                upload_url_to_github_release(src, gh_release)
+            for url, md5 in sources.items():
+                print(f'Uploading: {url} (md5: {md5})')
+                upload_url_to_github_release(url, md5, gh_release)
 
 
 if __name__ == '__main__':
