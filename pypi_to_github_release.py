@@ -70,7 +70,7 @@ def upload_url_to_github_release(url, md5, release):
         assert h.hexdigest() == md5
 
         print('  >> uploading')
-        release.upload_asset(f.name, content_type='application/zip', name=filename)
+        release.upload_asset(f.name, name=filename)
 
 
 
