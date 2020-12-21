@@ -26,20 +26,20 @@ all_projects = [
 
 all_versions = [
     # PyPI / GitHub release
-    ('9.0.0a2', 'v9.0.0a2'),
-#    ('6.0.0rc1', 'v6.0.0rc1'),
-#    ('6.0.0b3',  'v6.0.0b3'),
-#    ('6.0.0b2',  'v6.0.0b2'),
-#    ('6.0.0b1',  'v6.0.0b1'),
-#    ('6.0.0a1',  'v6.0.0a1'),
-#    ('5.0.0rc1', 'v5.0.0rc1'),
-#    ('5.0.0b4',  'v5.0.0b4'),
-#    ('5.0.0b3',  'v5.0.0b3'),
-#    ('5.0.0b2',  'v5.0.0b2'),
-#    ('5.0.0b1',  'v5.0.0b1'),
-#    ('5.0.0a1',  'v5.0.0a1'),
-#    ('4.0.0rc1', 'v4.0.0rc1'),
-#    ('4.0.0b4',  'v4.0.0b4'),
+#    ('9.0.0a2', 'v9.0.0a2'),
+    ('6.0.0rc1', 'v6.0.0rc1'),
+    ('6.0.0b3',  'v6.0.0b3'),
+    ('6.0.0b2',  'v6.0.0b2'),
+    ('6.0.0b1',  'v6.0.0b1'),
+    ('6.0.0a1',  'v6.0.0a1'),
+    ('5.0.0rc1', 'v5.0.0rc1'),
+    ('5.0.0b4',  'v5.0.0b4'),
+    ('5.0.0b3',  'v5.0.0b3'),
+    ('5.0.0b2',  'v5.0.0b2'),
+    ('5.0.0b1',  'v5.0.0b1'),
+    ('5.0.0a1',  'v5.0.0a1'),
+    ('4.0.0rc1', 'v4.0.0rc1'),
+    ('4.0.0b4',  'v4.0.0b4'),
 ]
 
 def get_pypi_assets(project, version):
@@ -60,7 +60,7 @@ def upload_url_to_github_release(url, algo, hash, release):
 
     with tempfile.NamedTemporaryFile() as f:
         h = hashlib.new(algo)
-        print('  >> downloading', url)
+        print('  >> downloading', url, 'to', f.name)
         with urllib.request.urlopen(url) as response:
             buf = response.read()
             f.write(buf)
@@ -86,9 +86,8 @@ def main():
                 continue
 
             gh_release = repo.get_release(version_gh)
-            print(gh_release)
             for url, (algo, hash) in sources.items():
-                print(f'Uploading: {url} ({algo}: {hash})')
+                print(f'Processing: {gh_release} <- {url} ({algo}: {hash})')
                 upload_url_to_github_release(url, algo, hash, gh_release)
 
 
