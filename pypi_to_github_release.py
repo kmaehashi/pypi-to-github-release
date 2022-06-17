@@ -25,25 +25,67 @@ all_projects = [
     'cupy-cuda112',
     'cupy-cuda113',
     'cupy-cuda114',
+    'cupy-cuda115',
+    'cupy-cuda116',
+]
+
+github_releases = [
+    'v4.0.0',
+    'v4.1.0',
+    'v4.2.0',
+    'v4.3.0',
+    'v4.4.0',
+    'v4.4.1',
+    'v4.5.0',
+    'v5.0.0',
+    'v5.1.0',
+    'v5.2.0',
+    'v5.3.0',
+    'v5.4.0',
+    'v6.0.0',
+    'v6.1.0',
+    'v6.2.0',
+    'v6.3.0',
+    'v6.4.0',
+    'v6.5.0',
+    'v6.6.0',
+    'v6.7.0',
+    'v7.0.0',
+    'v7.1.0',
+    'v7.1.1',
+    'v7.2.0',
+    'v7.3.0',
+    'v7.4.0',
+    'v7.5.0',
+    'v7.6.0',
+    'v7.7.0',
+    'v7.8.0',
+    'v8.0.0',
+    'v8.1.0',
+    'v8.2.0',
+    'v8.3.0',
+    'v8.4.0',
+    'v8.5.0',
+    'v8.6.0',
+    'v9.0.0',
+    'v9.1.0',
+    'v9.2.0',
+    'v9.3.0',
+    'v9.4.0',
+    'v9.5.0',
+    'v9.6.0',
+    'v10.0.0',
+    'v10.1.0',
+    'v10.2.0',
+    'v10.3.0',
+    'v10.3.1',
+    'v10.4.0',
+    'v10.5.0',
 ]
 
 all_versions = [
     # PyPI / GitHub release
-#    ('9.0.0a2', 'v9.0.0a2'),
-    ('8.0.0rc1', 'v8.0.0rc1'),
-    ('8.0.0b5',  'v8.0.0b5'),
-    ('8.0.0b4',  'v8.0.0b4'),
-    ('8.0.0b3',  'v8.0.0b3'),
-    ('8.0.0b2',  'v8.0.0b2'),
-    ('8.0.0b1',  'v8.0.0b1'),
-    ('8.0.0a1',  'v8.0.0a1'),
-
-    ('7.0.0rc1', 'v7.0.0rc1'),
-    ('7.0.0b4',  'v7.0.0b4'),
-    ('7.0.0b3',  'v7.0.0b3'),
-    ('7.0.0b2',  'v7.0.0b2'),
-    ('7.0.0b1',  'v7.0.0b1'),
-    ('7.0.0a1',  'v7.0.0a1'),
+    (v.lstrip('v'), v) for v in github_releases
 ]
 
 def get_pypi_assets(project, version):
@@ -81,7 +123,7 @@ def main():
     assert token
     repo = github.Github(token).get_repo(github_repo)
 
-    for project in all_projects:
+    for project in reversed(all_projects):
         for version_pypi, version_gh in all_versions:
             print(f'### {project} {version_pypi}')
             sources = get_pypi_assets(project, version_pypi)
